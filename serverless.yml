@@ -74,7 +74,7 @@ functions:
     handler: bin/main
     events:
       - http:
-          path: /${self:custom.version}/parmdata # this matches any path, the token 'any' doesn't mean anything special
+          path: /parmdata # this matches any path, the token 'any' doesn't mean anything special
           method: POST
           integration: lambda-proxy
           authorizer: # An AWS API Gateway Cognito authorizer function
