@@ -1,6 +1,7 @@
 package common
 
 import (
+	"context"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -42,7 +43,7 @@ func init() {
 
 }
 
-func PutDBParmData(ctx aws.Context, data RequestParmData) (err error) {
+func PutDBParmData(ctx context.Context, data RequestParmData) (err error) {
 
 	//First, Marshal the incoming EventItem JSON string data into a DynamoDB attribute map
 	evItem, err := dynamodbattribute.MarshalMap(data)
@@ -60,7 +61,6 @@ func PutDBParmData(ctx aws.Context, data RequestParmData) (err error) {
 		},
 	}
 	_, err = DynamoDBIfaceClient.PutItemWithContext(ctx, &dynamodb.PutItemInput{
-		//	_, err = DynamoDBIfaceClient.PutItem(&dynamodb.PutItemInput{
 		Item:                      evItem,
 		TableName:                 &TableName,
 		ConditionExpression:       aws.String(conditionalString),
