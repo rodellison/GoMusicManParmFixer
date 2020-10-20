@@ -20,7 +20,7 @@ var (
 )
 
 type ResponseOutput struct {
-	Message string   `json:"message"`
+	Message string `json:"message"`
 }
 
 func init() {
@@ -45,7 +45,7 @@ func extractRequestData(req *http.Request) (common.RequestParmData, error) {
 
 }
 
-func ProcessDatabase (w http.ResponseWriter, req *http.Request) {
+func ProcessDatabase(w http.ResponseWriter, req *http.Request) {
 
 	status := 200
 	message := "Processed request successfully!"
@@ -59,7 +59,7 @@ func ProcessDatabase (w http.ResponseWriter, req *http.Request) {
 		dbErr := common.PutDBParmData(req.Context(), myRequestBodyParmData)
 		if dbErr != nil {
 			status = 400
-			if (strings.Contains(dbErr.Error(), "ConditionalCheckFailedException")) {
+			if strings.Contains(dbErr.Error(), "ConditionalCheckFailedException") {
 				message = "Duplicate key already exists in DB."
 			} else {
 				message = dbErr.Error()
@@ -91,8 +91,6 @@ func ProcessDatabase (w http.ResponseWriter, req *http.Request) {
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	// Where ORIGIN_ALLOWED is like `scheme://dns[:port]`, or `*` (insecure)
-
 
 	if muxLambda == nil {
 		// stdout and stderr are sent to AWS CloudWatch Logs

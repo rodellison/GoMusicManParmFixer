@@ -13,7 +13,10 @@ This code in this repo provides for the serverless/lambda golang backend databas
 configuration. It incorporates [**GorillaMux**](https://github.com/gorilla/mux), wrapped by 
 [AWSLabs go api proxy](https://github.com/awslabs/aws-lambda-go-api-proxy) as a routing handler for requests. 
 
+_Tip to self_:
+Remember to setup the Response Headers for the API, particularly for Lambda-Proxy APIs
 
+![API Gateway](./APIGatewayResponseHeaders.png)
 
 
 
