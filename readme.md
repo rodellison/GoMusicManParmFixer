@@ -10,7 +10,7 @@ middleware wil use API Gateway with Cognito User Pools for authentication, and t
 will be a golang API/Lambda for handling correction inserts to the DynamoDB table.
 
 This code in this repo provides for the serverless/lambda golang backend database handler and api gateway 
-configuration. It incorporates [**Gin-gonic**](https://github.com/gin-gonic/gin), wrapped by 
+configuration. It incorporates [**GorillaMux**](https://github.com/gorilla/mux), wrapped by 
 [AWSLabs go api proxy](https://github.com/awslabs/aws-lambda-go-api-proxy) as a routing handler for requests. 
 
 

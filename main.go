@@ -58,10 +58,13 @@ func ProcessDatabase (w http.ResponseWriter, req *http.Request) {
 		//Process the request data here
 		dbErr := common.PutDBParmData(req.Context(), myRequestBodyParmData)
 		if dbErr != nil {
-			message = dbErr.Error()
 			status = 400
+			if (strings.Contains(dbErr.Error(), "ConditionalCheckFailedException")) {
+				message = "Duplicate key already exists in DB."
+			} else {
+				message = dbErr.Error()
+			}
 		} else {
-			status = 200
 			message = "Processed request successfully!"
 		}
 	} else {
@@ -73,21 +76,32 @@ func ProcessDatabase (w http.ResponseWriter, req *http.Request) {
 		Message: message,
 	}
 
+	//The headers in the reply are VERY important..
+	//API Gateway, by default for Lambda Proxy integration APIs, does NOT return headers automatically!
+	//READ THIS: https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-cors.html
+	//Look for: Enabling CORS support for Lambda or HTTP proxy integrations
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers",
+		"Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token")
 	w.WriteHeader(status)
+
 	json.NewEncoder(w).Encode(myResponse)
 
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	// Where ORIGIN_ALLOWED is like `scheme://dns[:port]`, or `*` (insecure)
+
 
 	if muxLambda == nil {
 		// stdout and stderr are sent to AWS CloudWatch Logs
 		log.Printf("GorillaMux cold start")
 		r := mux.NewRouter()
-
 		r.HandleFunc("/parmdata", ProcessDataHandler).Methods("POST")
 
 		muxLambda = muxadapter.New(r)
+
 	}
 
 	return muxLambda.ProxyWithContext(ctx, req)
